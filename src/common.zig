@@ -28,22 +28,25 @@ pub fn readFile(name: []const u8, allocator: std.mem.Allocator) ![]const u8 {
     return file_buffer;
 }
 
-const RESET = "\x1b[0m";
-const BOLD = "\x1b[1m";
-const FAINT = "\x1b[2m";
-const GREEN = "\x1b[32m";
-const YELLOW = "\x1b[33m";
-const BLUE = "\x1b[34m";
-const PINK = "\x1b[35m";
-const CYAN = "\x1b[36m";
-const BLACK = "\x1b[30m";
-const WHITE = "\x1b[37m";
-const DEFAULT = "\x1b[39m";
-const LGRAY = "\x1b[90m";
-const LRED = "\x1b[91m";
-const LGREEN = "\x1b[92m";
-const LYELLOW = "\x1b[93m";
-const LBLUE = "\x1b[94m";
-const LMAGENTA = "\x1b[95m";
-const LCYAN = "\x1b[96m";
-const LWHITE = "\x1b[97m";
+pub const RESET = "\x1b[0m";
+pub const BOLD = "\x1b[1m";
+pub const FAINT = "\x1b[2m";
+pub const GREEN = "\x1b[32m";
+pub const YELLOW = "\x1b[33m";
+pub const BLUE = "\x1b[34m";
+pub const PINK = "\x1b[35m";
+pub const CYAN = "\x1b[36m";
+pub const BLACK = "\x1b[30m";
+pub const WHITE = "\x1b[37m";
+pub const DEFAULT = "\x1b[39m";
+pub const LGRAY = "\x1b[90m";
+pub const LRED = "\x1b[91m";
+pub const LGREEN = "\x1b[92m";
+pub const LYELLOW = "\x1b[93m";
+pub const LBLUE = "\x1b[94m";
+pub const LMAGENTA = "\x1b[95m";
+pub const LCYAN = "\x1b[96m";
+pub const LWHITE = "\x1b[97m";
+
+pub const string = []const u8;
+pub const cstring = [*:0]const u8;

@@ -1,7 +1,13 @@
+pub const Instr = union(InstrKind) {
+    r: RInstrRepr,
+    i: IInstrRepr,
+    j: JInstrRepr,
+};
+
 pub const InstrKind = enum(u8) {
-    R_Instr,
-    I_Instr,
-    J_Instr,
+    r,
+    i,
+    j,
 };
 
 pub const RInstrRepr = packed struct(u16) {
@@ -24,10 +30,10 @@ pub const JInstrRepr = packed struct(u16) {
     op: u5,
 };
 
-pub const Instruction = struct {
-    labels: [][]const u8,
-    indexes: []u32,
-    kinds: []InstrKind,
+pub const Token = struct {
+    _type: TknType,
+    idx: u32,
+    line: u32,
 };
 
 pub const TknType = enum(u8) {

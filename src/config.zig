@@ -15,6 +15,7 @@ pub const RInstr = enum(u8) {
     SRA,
     ROR,
 };
+
 pub const RInstrMap = ComptimeStringMap(RInstr, .{
     .{ "add", .ADD },
     .{ "sub", .SUB },
@@ -43,6 +44,7 @@ pub const IInstr = enum(u8) {
     SRAI,
     RORI,
 };
+
 pub const IInstrMap = ComptimeStringMap(IInstr, .{
     .{ "addi", .ADDI },
     .{ "slti", .SLTI },
