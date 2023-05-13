@@ -1,15 +1,15 @@
 //imports
 const std = @import("std");
-const common = @import("common.zig");
-const parser = @import("Parser.zig");
+const utils = @import("utils.zig");
+const parser = @import("parser.zig");
 
-const print = common.print;
-const readFile = common.readFile;
+const print = utils.print;
+const readFile = utils.readFile;
 const assert = std.debug.assert;
 const parse = parser.parse;
 
-const string = common.string;
-const cstring = common.cstring;
+const string = utils.string;
+const cstring = utils.cstring;
 
 fn assemble(name: cstring, allocator: std.mem.Allocator) !void {
     // var path_buffer: [std.fs.MAX_PATH_BYTES]u8 = undefined;
@@ -21,7 +21,11 @@ fn assemble(name: cstring, allocator: std.mem.Allocator) !void {
     // std.log.info("FILE READ", .{});
     // print(asm_file);
     var tree: parser.SyntaxTree = .{};
-    try parse(asm_file, &tree, allocator);
+
+    try parse(&tree, asm_file, allocator) catch {
+        std.log.err("parsing");
+    };
+
     defer {
         tree.labels.deinit();
         tree.instrs.deinit();
@@ -29,7 +33,12 @@ fn assemble(name: cstring, allocator: std.mem.Allocator) !void {
 }
 
 pub fn assembleInit() void {
-    var gp = std.heap.GeneralPurposeAllocator(.{ .safety = true }){};
+    // Init memory allocator
+    var gp = std.heap.GeneralPurposeAllocator(.{
+        .safety = true,
+        .thread_safe = true,
+    }){};
+
     defer _ = {
         if (gp.deinit()) {
             std.log.err("There are memory leaks", .{});
@@ -37,6 +46,7 @@ pub fn assembleInit() void {
     };
     const allocator = gp.backing_allocator;
 
+    // allocate for command line arguments
     var name: cstring = undefined;
     const s = std.process.argsAlloc(allocator) catch |e| {
         std.log.err("{}", .{e});
@@ -44,14 +54,16 @@ pub fn assembleInit() void {
     };
     defer std.process.argsFree(allocator, s);
 
+    // default to examples file if no arguments passed
     if (s.len < 2) {
         name = "examples/code.asm";
     } else {
         name = s[1];
     }
 
+    // Do the thing
     assemble(name, allocator) catch |e| {
-        std.log.err("compile error {}", .{e});
+        std.log.err("assemble problem {}", .{e});
     };
 }
 
@@ -60,5 +72,7 @@ pub fn main() void {
 }
 
 test "tests" {
-    _ = @import("common.zig");
+    _ = @import("utils.zig");
+    _ = @import("structs.zig");
+    _ = @import("parser.zig");
 }

@@ -6,7 +6,13 @@ pub fn print(bytes: []const u8) void {
     };
 }
 
-pub fn readFile(name: []const u8, allocator: std.mem.Allocator) ![]const u8 {
+const FileOpenError = error{
+    AccessDenied,
+    OutOfMemory,
+    FileNotFound,
+};
+
+pub fn readFile(name: []const u8, allocator: std.mem.Allocator) anyerror![]const u8 {
     var path_buffer: [std.fs.MAX_PATH_BYTES]u8 = undefined;
     const path = try std.fs.realpath(name, &path_buffer);
 
@@ -16,6 +22,10 @@ pub fn readFile(name: []const u8, allocator: std.mem.Allocator) ![]const u8 {
 
     // Read the contents
     const file_size = try file.getEndPos();
+    if (file_size > (1 << 30)) {
+        std.log.err("File too large", .{});
+        return std.fs.File.OpenError.FileTooBig;
+    }
     const file_buffer = try file.readToEndAlloc(allocator, file_size);
 
     // Split by "\n" and iterate through the resulting slices of "const []u8"
