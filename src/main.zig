@@ -22,8 +22,8 @@ fn assemble(name: cstring, allocator: std.mem.Allocator) !void {
     // print(asm_file);
     var tree: parser.SyntaxTree = .{};
 
-    try parse(&tree, asm_file, allocator) catch {
-        std.log.err("parsing");
+    parse(&tree, asm_file, allocator) catch |e| {
+        std.log.err("parsing err: {}", .{e});
     };
 
     defer {

@@ -45,7 +45,7 @@ fn parseLine(tree: *SyntaxTree, line: string) !void {
         .ID_LIT => {},
         else => {},
     }
-    try tree.instrs.append();
+    // try tree.instrs.append();
 }
 
 fn parseIinstr(line: string) structs.IInstr {
@@ -60,6 +60,9 @@ fn parseRinstr(line: string) structs.RInstr {
 
 fn getNextToken(tree: *SyntaxTree, line: string) Token {
     const trimmedLine: string = skipWhitespace(line);
+    if (trimmedLine.len < 1) {
+        return Token{ .type = .ERR_UNKNOWN };
+    }
     return switch (trimmedLine[0]) {
         '0'...'9' => parseNumerics(tree, trimmedLine),
         'a'...'z', 'A'...'Z', '_' => parseKeyword(tree, line),
@@ -92,7 +95,7 @@ fn parseNumerics(tree: *SyntaxTree, sc_line: string) Token {
 }
 fn parseKeyword(tree: *SyntaxTree, sc_line: string) Token {
     _ = tree;
-    var count = 0;
+    var count: usize = 0;
     for (sc_line, 0..) |c, i| {
         count = i;
         if (std.ascii.isAlphanumeric(c) or c == '_') {
@@ -102,11 +105,11 @@ fn parseKeyword(tree: *SyntaxTree, sc_line: string) Token {
 
     var tkn_type: structs.TknType = .ID_LIT;
     if (structs.IInstrMap.has(sc_line[0 .. count + 1])) {
-        type = .I_INSTR;
+        tkn_type = .I_INSTR;
     } else if (structs.RInstrMap.has(sc_line[0 .. count + 1])) {
-        type = .R_INSTR;
+        tkn_type = .R_INSTR;
     } else if (structs.JInstrMap.has(sc_line[0 .. count + 1])) {
-        type = .J_INSTR;
+        tkn_type = .J_INSTR;
     }
     return Token{ .type = tkn_type };
 }
